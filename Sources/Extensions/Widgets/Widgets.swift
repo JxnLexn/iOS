@@ -44,6 +44,7 @@ struct WidgetsBundle17: WidgetBundle {
         WidgetActions()
         WidgetOpenPage()
         WidgetSensors()
+        HALiveActivityWidget()
     }
 }
 
@@ -88,5 +89,8 @@ struct WidgetsBundle18: WidgetBundle {
         WidgetSensors()
         WidgetActions()
         WidgetOpenPage()
+
+        // Live Activities
+        HALiveActivityWidget()
     }
 }

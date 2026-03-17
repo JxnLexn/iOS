@@ -1,0 +1,23 @@
+{
+    "input": {
+        "message": "end_live_activity",
+        "data": {
+            "activity_id": "test-activity-123",
+            "dismiss_after": 300
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "background"
+    },
+    "payload": {
+        "aps": {
+            "contentAvailable": true
+        },
+        "homeassistant": {
+            "command": "end_live_activity",
+            "activity_id": "test-activity-123",
+            "dismiss_after": 300
+        }
+    }
+}

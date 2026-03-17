@@ -1,0 +1,29 @@
+{
+    "input": {
+        "message": "update_live_activity",
+        "data": {
+            "activity_id": "test-activity-123",
+            "value": "22.1°C",
+            "icon": "mdi:thermometer",
+            "subtitle": "Wohnzimmer",
+            "color": "#FF9500"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "background"
+    },
+    "payload": {
+        "aps": {
+            "contentAvailable": true
+        },
+        "homeassistant": {
+            "command": "update_live_activity",
+            "activity_id": "test-activity-123",
+            "value": "22.1°C",
+            "icon": "mdi:thermometer",
+            "subtitle": "Wohnzimmer",
+            "color": "#FF9500"
+        }
+    }
+}

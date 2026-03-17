@@ -22,6 +22,12 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
+
+        if #available(iOS 16.1, *) {
+            register(command: "start_live_activity", handler: HandlerStartLiveActivity())
+            register(command: "update_live_activity", handler: HandlerUpdateLiveActivity())
+            register(command: "end_live_activity", handler: HandlerEndLiveActivity())
+        }
         #endif
 
         #if os(iOS) || os(macOS)

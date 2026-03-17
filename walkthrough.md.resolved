@@ -1,0 +1,110 @@
+# Live Activities – Implementation Walkthrough
+
+## Summary
+
+Added Live Activities (iOS 16.1+) support to the Home Assistant Companion iOS app. Users can now start, update, and end Live Activities on their Lock Screen and Dynamic Island via push notifications sent from Home Assistant automations.
+
+## Files Created
+
+### Data Model & Manager (`Sources/Shared/LiveActivity/`)
+
+| File | Purpose |
+|------|---------|
+| [LiveActivityAttributes.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Shared/LiveActivity/LiveActivityAttributes.swift) | `ActivityAttributes` model with `ContentState` (value, icon, subtitle, color, progress) |
+| [LiveActivityManager.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Shared/LiveActivity/LiveActivityManager.swift) | Singleton manager: start/update/end activities, push token registration via `ios.live_activity_token` event |
+
+### SwiftUI Views (`Sources/Extensions/Widgets/LiveActivity/`)
+
+| File | Purpose |
+|------|---------|
+| [LiveActivityView.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Extensions/Widgets/LiveActivity/LiveActivityView.swift) | Lock Screen banner view + Dynamic Island views (compact, expanded, minimal) with MDI icon support |
+| [HALiveActivityWidget.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Extensions/Widgets/LiveActivity/HALiveActivityWidget.swift) | `ActivityConfiguration` widget struct registered in widget bundles |
+
+### Notification Command Handlers (`Sources/Shared/Notifications/NotificationCommands/`)
+
+| File | Purpose |
+|------|---------|
+| [HandlerLiveActivity.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Shared/Notifications/NotificationCommands/HandlerLiveActivity.swift) | Three handlers: `HandlerStartLiveActivity`, `HandlerUpdateLiveActivity`, `HandlerEndLiveActivity` |
+
+### Test Fixtures (`PushServer/Tests/SharedPushTests/notification_test_cases.bundle/`)
+
+| File | Purpose |
+|------|---------|
+| [command_start_live_activity.json](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/PushServer/Tests/SharedPushTests/notification_test_cases.bundle/command_start_live_activity.json) | Test fixture for start command |
+| [command_update_live_activity.json](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/PushServer/Tests/SharedPushTests/notification_test_cases.bundle/command_update_live_activity.json) | Test fixture for update command |
+| [command_end_live_activity.json](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/PushServer/Tests/SharedPushTests/notification_test_cases.bundle/command_end_live_activity.json) | Test fixture for end command |
+
+---
+
+## Files Modified
+
+| File | Change |
+|------|--------|
+| [Widgets.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Extensions/Widgets/Widgets.swift) | Added `HALiveActivityWidget()` to `WidgetsBundle17` and `WidgetsBundle18` |
+| [NotificationsCommandManager.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/Shared/Notifications/NotificationCommands/NotificationsCommandManager.swift) | Registered `start_live_activity`, `update_live_activity`, `end_live_activity` commands (iOS 16.1+) |
+| [NotificationParserLegacy.swift](file:///c:/Users/gaschler/AntiGravity/iOS/Sources/PushServer/SharedPush/Sources/NotificationParserLegacy.swift) | Added 3 new `LegacyNotificationCommandType` cases + APNs payload construction |
+
+---
+
+## Usage from Home Assistant
+
+### Start a Live Activity
+```yaml
+service: notify.mobile_app_<device>
+data:
+  message: "start_live_activity"
+  data:
+    entity_id: sensor.temperature
+    title: "Temperatur"
+    value: "{{ states('sensor.temperature') }}°C"
+    icon: "mdi:thermometer"
+    subtitle: "Wohnzimmer"
+    color: "#FF9500"
+    progress: 0.65  # optional, 0.0–1.0
+```
+
+### Update a Live Activity
+```yaml
+service: notify.mobile_app_<device>
+data:
+  message: "update_live_activity"
+  data:
+    activity_id: "<activity-id>"
+    value: "{{ states('sensor.temperature') }}°C"
+    icon: "mdi:thermometer"
+    subtitle: "Wohnzimmer aktualisiert"
+```
+
+### End a Live Activity
+```yaml
+service: notify.mobile_app_<device>
+data:
+  message: "end_live_activity"
+  data:
+    activity_id: "<activity-id>"
+    dismiss_after: 300  # optional, seconds before dismissing from Lock Screen
+```
+
+---
+
+## Remaining Manual Steps (Xcode on macOS)
+
+> [!IMPORTANT]
+> These steps cannot be automated from Windows and must be done in Xcode:
+
+1. **Add new files to Xcode targets:**
+   - `LiveActivityAttributes.swift` and `LiveActivityManager.swift` → **Shared** framework target
+   - `LiveActivityView.swift` and `HALiveActivityWidget.swift` → **Widgets** extension target
+   - `HandlerLiveActivity.swift` → **Shared** framework target
+
+2. **Enable Live Activities in Info.plist:**
+   - Select the **main app target** → Info → add key `NSSupportsLiveActivities` = `YES`
+
+3. **Build and test:**
+   ```bash
+   # Build the project
+   xcodebuild -workspace HomeAssistant.xcworkspace -scheme HomeAssistant -sdk iphonesimulator build
+   
+   # Run PushServer tests (verifies new test fixtures)
+   cd Sources/PushServer && swift test --filter NotificationParserLegacyTests
+   ```

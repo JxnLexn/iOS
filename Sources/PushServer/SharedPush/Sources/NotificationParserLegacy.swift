@@ -80,6 +80,29 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 return .init(LegacyNotificationCommandType.updateComplications.rawValue)
             case .updateWidgets:
                 return .init(LegacyNotificationCommandType.updateWidgets.rawValue)
+            case .startLiveActivity:
+                var homeassistant = [String: Any]()
+                for key in ["entity_id", "title", "value", "icon", "subtitle", "color", "server_id"] {
+                    if let val = data[key] { homeassistant[key] = val }
+                }
+                if let progress = data["progress"] { homeassistant["progress"] = progress }
+                return .init(LegacyNotificationCommandType.startLiveActivity.rawValue, homeassistant: homeassistant)
+            case .updateLiveActivity:
+                var homeassistant = [String: Any]()
+                for key in ["activity_id", "value", "icon", "subtitle", "color"] {
+                    if let val = data[key] { homeassistant[key] = val }
+                }
+                if let progress = data["progress"] { homeassistant["progress"] = progress }
+                return .init(LegacyNotificationCommandType.updateLiveActivity.rawValue, homeassistant: homeassistant)
+            case .endLiveActivity:
+                var homeassistant = [String: Any]()
+                if let activityId = data["activity_id"] { homeassistant["activity_id"] = activityId }
+                if let dismissAfter = data["dismiss_after"] { homeassistant["dismiss_after"] = dismissAfter }
+                // Optional final state values
+                for key in ["value", "icon", "subtitle", "color"] {
+                    if let val = data[key] { homeassistant[key] = val }
+                }
+                return .init(LegacyNotificationCommandType.endLiveActivity.rawValue, homeassistant: homeassistant)
             default: return nil
             }
         }()
@@ -255,6 +278,9 @@ enum LegacyNotificationCommandType: String {
     case clearNotification = "clear_notification"
     case updateComplications = "update_complications"
     case updateWidgets = "update_widgets"
+    case startLiveActivity = "start_live_activity"
+    case updateLiveActivity = "update_live_activity"
+    case endLiveActivity = "end_live_activity"
 }
 
 private extension Dictionary where Value == Any {

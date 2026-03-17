@@ -1,0 +1,31 @@
+{
+    "input": {
+        "message": "start_live_activity",
+        "data": {
+            "entity_id": "sensor.temperature",
+            "title": "Temperatur",
+            "value": "21.5°C",
+            "icon": "mdi:thermometer",
+            "subtitle": "Wohnzimmer",
+            "color": "#FF9500"
+        }
+    },
+    "rate_limit": false,
+    "headers": {
+        "apns-push-type": "background"
+    },
+    "payload": {
+        "aps": {
+            "contentAvailable": true
+        },
+        "homeassistant": {
+            "command": "start_live_activity",
+            "entity_id": "sensor.temperature",
+            "title": "Temperatur",
+            "value": "21.5°C",
+            "icon": "mdi:thermometer",
+            "subtitle": "Wohnzimmer",
+            "color": "#FF9500"
+        }
+    }
+}
