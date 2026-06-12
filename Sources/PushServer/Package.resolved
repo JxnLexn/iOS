@@ -128,12 +128,21 @@
         }
       },
       {
+        "package": "swift-http-structured-headers",
+        "repositoryURL": "https://github.com/apple/swift-http-structured-headers.git",
+        "state": {
+          "branch": null,
+          "revision": "933538faa42c432d385f02e07df0ace7c5ecfc47",
+          "version": "1.7.0"
+        }
+      },
+      {
         "package": "swift-http-types",
         "repositoryURL": "https://github.com/apple/swift-http-types",
         "state": {
           "branch": null,
-          "revision": "12358d55a3824bd5fed310b999ea8cf83a9a1a65",
-          "version": "1.0.3"
+          "revision": "db774a277f60063a32d854f2980299caf06da041",
+          "version": "1.6.0"
         }
       },
       {
@@ -159,8 +168,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "635b2589494c97e48c62514bc8b37ced762e0a62",
-          "version": "2.63.0"
+          "revision": "77b84ac2cd2ac9e4ac67d19f045fd5b434f56967",
+          "version": "2.101.0"
         }
       },
       {
@@ -168,8 +177,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio-extras.git",
         "state": {
           "branch": null,
-          "revision": "363da63c1966405764f380c627409b2f9d9e710b",
-          "version": "1.21.0"
+          "revision": "f1f6f772198bee35d99dd145f1513d8581a54f2c",
+          "version": "1.26.0"
         }
       },
       {
@@ -213,8 +222,8 @@
         "repositoryURL": "https://github.com/apple/swift-system.git",
         "state": {
           "branch": null,
-          "revision": "025bcb1165deab2e20d4eaba79967ce73013f496",
-          "version": "1.2.1"
+          "revision": "e402d5fa38d1524896e7d913ce1320384e0bedf7",
+          "version": "1.7.0"
         }
       },
       {
